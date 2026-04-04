@@ -2,9 +2,12 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 const host = process.env.TAURI_DEV_HOST;
+const deployTarget = process.env.DEPLOY_TARGET;
+const isGitHubPagesBuild = deployTarget === "pages";
 
 export default defineConfig({
   plugins: [react()],
+  base: isGitHubPagesBuild ? "/Fakturujto/" : "/",
   clearScreen: false,
   server: {
     port: 1420,
