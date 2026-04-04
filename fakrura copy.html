@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html lang="cs"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#f4aeff",
+                    "surface-container-high": "#e9e7ea",
+                    "tertiary-container": "#c6a851",
+                    "outline": "#827282",
+                    "outline-variant": "#d4c1d3",
+                    "surface-variant": "#e3e2e5",
+                    "on-tertiary-fixed": "#241a00",
+                    "on-secondary": "#ffffff",
+                    "background": "#fbf9fc",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#fdd6ff",
+                    "on-background": "#1b1b1e",
+                    "surface-tint": "#9920b8",
+                    "secondary-fixed-dim": "#d8bfd7",
+                    "on-secondary-container": "#735e73",
+                    "secondary-container": "#f5daf4",
+                    "on-surface-variant": "#504251",
+                    "inverse-on-surface": "#f2f0f3",
+                    "surface-bright": "#fbf9fc",
+                    "primary": "#71008c",
+                    "on-secondary-fixed": "#261628",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#9317b2",
+                    "inverse-primary": "#f4aeff",
+                    "surface": "#fbf9fc",
+                    "secondary-fixed": "#f5daf4",
+                    "tertiary-fixed-dim": "#e3c469",
+                    "on-error": "#ffffff",
+                    "on-primary-container": "#f7bdff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#340042",
+                    "on-secondary-fixed-variant": "#544155",
+                    "surface-container-highest": "#e3e2e5",
+                    "surface-container-low": "#f5f3f6",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#790095",
+                    "on-tertiary-container": "#4f3d00",
+                    "on-primary": "#ffffff",
+                    "secondary": "#6c586d",
+                    "on-tertiary-fixed-variant": "#584400",
+                    "on-surface": "#1b1b1e",
+                    "tertiary-fixed": "#ffe08b",
+                    "surface-container": "#efedf0",
+                    "inverse-surface": "#303033",
+                    "surface-dim": "#dbd9dc",
+                    "tertiary": "#735c06"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tabular-numbers { font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+
+<main class="max-w-5xl mx-auto p-6 md:p-12">
+<!-- Invoice Editorial Header -->
+<header class="flex flex-col md:flex-row justify-between items-end mb-8 gap-8">
+<div>
+<h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter text-on-background mb-4">Faktura - 20260008</h1>
+<div class="flex gap-6">
+<div class="flex flex-col">
+<span class="text-[0.6875rem] uppercase tracking-[0.05em] font-semibold text-slate-500">Variabilní symbol</span>
+<span class="text-lg font-medium">20260008</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[0.6875rem] uppercase tracking-[0.05em] font-semibold text-slate-500">Konstantní symbol</span>
+<span class="text-lg font-medium">0308</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Entities Section (Asymmetric Grid) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+<!-- Supplier Card -->
+<div class="bg-surface-container-low rounded-2xl p-8 transition-transform duration-300 hover:translate-y-[-4px]">
+<p class="text-[0.6875rem] uppercase tracking-[0.05em] font-bold text-primary mb-6">Dodavatel</p>
+<h2 class="text-2xl font-bold mb-2">Jiří Kolb</h2>
+<p class="text-on-surface-variant mb-1">Praha</p>
+<div class="space-y-1 text-sm text-on-surface-variant mb-6">
+<p>IČ: 21527059</p>
+<p>Neplátce DPH</p>
+</div>
+<div class="pt-4 border-t border-outline-variant/20">
+<p class="text-xs italic text-slate-400">Podnikatel je zapsán v živnostenském rejstříku.</p>
+</div>
+</div>
+<!-- Client Card -->
+<div class="bg-surface-container-lowest rounded-2xl p-8 transition-transform duration-300 hover:translate-y-[-4px]">
+<p class="text-[0.6875rem] uppercase tracking-[0.05em] font-bold text-slate-500 mb-6">Odběratel</p>
+<h2 class="text-2xl font-bold mb-2">Czech Video Center a.s.</h2>
+<p class="text-on-surface-variant mb-1">Praha</p>
+<div class="space-y-1 text-sm text-on-surface-variant">
+<p>IČ: 09839194</p>
+<p>DIČ: CZ09839194</p>
+</div>
+</div>
+</section>
+<!-- Payment & Dates Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="bg-surface-container-low md:col-span-2 rounded-2xl p-8">
+<p class="text-[0.6875rem] uppercase tracking-[0.05em] font-bold text-slate-500 mb-6">Platební údaje</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div>
+<p class="text-[0.6875rem] text-slate-400 uppercase tracking-wider mb-1">Účet</p>
+<p class="font-semibold text-lg tabular-numbers">1253541002/5500</p>
+</div>
+<div>
+<p class="text-[0.6875rem] text-slate-400 uppercase tracking-wider mb-1">Metoda</p>
+<p class="font-semibold text-lg">Převodem</p>
+</div>
+<div class="sm:col-span-2">
+<p class="text-[0.6875rem] text-slate-400 uppercase tracking-wider mb-1">IBAN</p>
+<p class="font-semibold text-lg tabular-numbers tracking-wide">CZ22 5500 0000 0012 5354 1002</p>
+</div>
+<div>
+<p class="text-[0.6875rem] text-slate-400 uppercase tracking-wider mb-1">SWIFT / BIC</p>
+<p class="font-semibold text-lg">RZBCZPP</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<div class="bg-surface-container-lowest rounded-2xl p-8 flex-1 flex flex-col justify-center">
+<p class="text-[0.6875rem] uppercase tracking-[0.05em] font-bold text-slate-500 mb-2">Vystaveno</p>
+<p class="text-xl font-bold">30.03.2026</p>
+</div>
+<div class="bg-primary-container rounded-2xl p-8 flex-1 flex flex-col justify-center text-on-primary-container">
+<p class="text-[0.6875rem] uppercase tracking-[0.05em] font-bold opacity-80 mb-2">Splatnost</p>
+<p class="text-2xl font-black">13.04.2026</p>
+</div>
+</div>
+</section>
+<!-- Editorial Table -->
+<section class="mb-8 overflow-hidden">
+<div class="flex justify-between items-center mb-8 px-2">
+<h3 class="text-2xl font-bold tracking-tight">Položky faktury</h3>
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-xs font-bold text-slate-600">5 POLOŽEK</span>
+</div>
+<div class="w-full">
+<div class="grid grid-cols-12 gap-4 px-4 py-3 border-b border-outline-variant/30">
+<div class="col-span-6 text-[0.6875rem] uppercase tracking-[0.05em] font-bold text-slate-400">Popis úkonu</div>
+<div class="col-span-2 text-right text-[0.6875rem] uppercase tracking-[0.05em] font-bold text-slate-400">Množství</div>
+<div class="col-span-2 text-right text-[0.6875rem] uppercase tracking-[0.05em] font-bold text-slate-400">Cena / j.</div>
+<div class="col-span-2 text-right text-[0.6875rem] uppercase tracking-[0.05em] font-bold text-slate-400">Celkem</div>
+</div>
+<!-- Rows with generous whitespace -->
+<div class="space-y-2">
+<div class="grid grid-cols-12 gap-4 px-4 py-5 bg-surface-container-lowest rounded-xl items-center">
+<div class="col-span-6 font-semibold">Mailing</div>
+<div class="col-span-2 text-right tabular-numbers text-on-surface-variant">50.00 h</div>
+<div class="col-span-2 text-right tabular-numbers text-on-surface-variant">312.50 Kč</div>
+<div class="col-span-2 text-right font-bold tabular-numbers">15 625.00 Kč</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-4 py-5 bg-surface rounded-xl items-center">
+<div class="col-span-6 font-semibold">Interní úkoly</div>
+<div class="col-span-2 text-right tabular-numbers text-on-surface-variant">25.00 h</div>
+<div class="col-span-2 text-right tabular-numbers text-on-surface-variant">312.50 Kč</div>
+<div class="col-span-2 text-right font-bold tabular-numbers">7 812.50 Kč</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-4 py-5 bg-surface-container-lowest rounded-xl items-center">
+<div class="col-span-6 font-semibold">Cold calling</div>
+<div class="col-span-2 text-right tabular-numbers text-on-surface-variant">60.00 h</div>
+<div class="col-span-2 text-right tabular-numbers text-on-surface-variant">312.50 Kč</div>
+<div class="col-span-2 text-right font-bold tabular-numbers">18 750.00 Kč</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-4 py-5 bg-surface rounded-xl items-center">
+<div class="col-span-6 font-semibold">Schůzky</div>
+<div class="col-span-2 text-right tabular-numbers text-on-surface-variant">25.00 h</div>
+<div class="col-span-2 text-right tabular-numbers text-on-surface-variant">312.50 Kč</div>
+<div class="col-span-2 text-right font-bold tabular-numbers">7 812.50 Kč</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-4 py-5 bg-surface-container-lowest rounded-xl items-center border-l-4 border-primary">
+<div class="col-span-6 font-semibold">Odměny</div>
+<div class="col-span-2 text-right tabular-numbers text-on-surface-variant">14.00 ks</div>
+<div class="col-span-2 text-right tabular-numbers text-on-surface-variant">1 000.00 Kč</div>
+<div class="col-span-2 text-right font-bold tabular-numbers">14 000.00 Kč</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Final Summary & Footer -->
+<section class="flex flex-col md:flex-col gap-8 items-start">
+<div class="flex-1 space-y-6">
+<div class="flex flex-col sm:flex-row gap-8 px-2">
+<div>
+<p class="text-[0.6875rem] uppercase tracking-[0.05em] font-bold text-slate-400 mb-1">Email</p>
+<a class="font-medium text-primary hover:underline" href="mailto:jajirka.kolb@gmail.com">jajirka.kolb@gmail.com</a>
+</div>
+<div>
+<p class="text-[0.6875rem] uppercase tracking-[0.05em] font-bold text-slate-400 mb-1">Telefon</p>
+<p class="font-medium">774 865 508</p>
+</div>
+</div>
+</div>
+<div class="w-full">
+<div class="bg-on-background text-background rounded-3xl p-8 shadow-2xl relative overflow-hidden grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 md:gap-10 items-center md:items-stretch min-h-0">
+<!-- Subtle background decoration -->
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-primary opacity-20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col justify-center min-w-0">
+<p class="text-[0.6875rem] uppercase tracking-[0.2em] font-bold opacity-60 mb-2">CELKEM K ÚHRADĚ</p>
+<h4 class="text-5xl font-black tracking-tighter tabular-numbers leading-tight">64 000.00</h4>
+<p class="text-xl font-medium opacity-80">českých korun</p>
+</div>
+<div class="relative z-10 flex items-center justify-center md:justify-end h-44 md:h-auto md:min-h-0 self-stretch">
+<img src="fakrura-qr.png" alt="QR platba" width="512" height="512" class="h-full w-auto max-h-[172px] aspect-square object-contain object-center md:object-right invert select-none pointer-events-none" />
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Navigation Shell Placeholder for Context -->
+<div class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] z-50">
+<div class="bg-on-background/90 backdrop-blur-xl rounded-2xl p-4 flex justify-around items-center shadow-2xl border border-white/10">
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="text-[10px] uppercase font-bold">Faktura</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] uppercase font-bold">Data</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">share</span>
+<span class="text-[10px] uppercase font-bold">Sdílet</span>
+</div>
+</div>
+</div>
+</body></html>

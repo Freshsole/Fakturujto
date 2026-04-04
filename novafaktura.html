@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="cs"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#fbf9fc",
+                    "primary-fixed": "#fdd6ff",
+                    "inverse-surface": "#303033",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#c6a851",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed": "#241a00",
+                    "surface-dim": "#dbd9dc",
+                    "background": "#fbf9fc",
+                    "surface-variant": "#e3e2e5",
+                    "on-error": "#ffffff",
+                    "on-surface-variant": "#504251",
+                    "outline-variant": "#d4c1d3",
+                    "on-secondary-container": "#735e73",
+                    "secondary": "#6c586d",
+                    "on-tertiary-container": "#4f3d00",
+                    "on-primary-fixed-variant": "#790095",
+                    "surface-container": "#efedf0",
+                    "primary": "#71008c",
+                    "on-secondary-fixed-variant": "#544155",
+                    "on-primary": "#ffffff",
+                    "outline": "#827282",
+                    "surface-bright": "#fbf9fc",
+                    "secondary-fixed": "#f5daf4",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f5f3f6",
+                    "on-secondary-fixed": "#261628",
+                    "tertiary": "#735c06",
+                    "on-surface": "#1b1b1e",
+                    "on-primary-fixed": "#340042",
+                    "on-background": "#1b1b1e",
+                    "tertiary-fixed-dim": "#e3c469",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#f4aeff",
+                    "inverse-on-surface": "#f2f0f3",
+                    "primary-container": "#9317b2",
+                    "surface-tint": "#9920b8",
+                    "primary-fixed-dim": "#f4aeff",
+                    "surface-container-high": "#e9e7ea",
+                    "surface-container-highest": "#e3e2e5",
+                    "on-primary-container": "#f7bdff",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#ffe08b",
+                    "on-tertiary-fixed-variant": "#584400",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#f5daf4",
+                    "secondary-fixed-dim": "#d8bfd7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #fbf9fc; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- App Layout Container -->
+<div class="flex min-h-screen">
+<!-- SideNavBar - Shared Component -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#F5F3F6] dark:bg-[#1A111E] flex flex-col p-6 space-y-2 z-40">
+<div class="mb-10 px-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-[#9317B2] leading-none">Auditor Pro</h1>
+<p class="text-[10px] uppercase tracking-widest text-[#0A010D]/50 mt-1">Premium Billing</p>
+</div>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-[#0A010D]/70 hover:bg-white/50 transition-all duration-300 rounded-xl group" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span class="font-medium">Přehled</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white text-[#9317B2] rounded-xl shadow-sm font-bold transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span>Nová faktura</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#0A010D]/70 hover:bg-white/50 transition-all duration-300 rounded-xl group" href="#">
+<span class="material-symbols-outlined text-xl">description</span>
+<span class="font-medium">Faktury</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#0A010D]/70 hover:bg-white/50 transition-all duration-300 rounded-xl group" href="#">
+<span class="material-symbols-outlined text-xl">group</span>
+<span class="font-medium">Klienti</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#0A010D]/70 hover:bg-white/50 transition-all duration-300 rounded-xl group" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<span class="font-medium">Nastavení</span>
+</a>
+</nav>
+<div class="mt-auto pt-6">
+<button class="w-full py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">send</span>
+                Send Invoice
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-64 p-12 bg-surface">
+<!-- Page Header -->
+<header class="flex justify-between items-end mb-12 max-w-5xl mx-auto">
+<div class="space-y-2">
+<div class="flex items-center gap-3 group cursor-pointer">
+<h1 class="text-3xl font-extrabold tracking-tight text-on-surface">Nová faktura vydaná č. 20260009</h1>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">edit</span>
+</div>
+<p class="text-on-surface-variant/60 font-medium tracking-wide">VYTVOŘENÍ NOVÉHO DOKLADU</p>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 rounded-md font-semibold text-on-surface-variant hover:bg-surface-container-high transition-colors">Zrušit</button>
+<button class="px-8 py-3 bg-primary text-on-primary rounded-md font-bold shadow-xl shadow-primary/25 hover:brightness-110 active:scale-95 transition-all">Uložit fakturu</button>
+</div>
+</header>
+<!-- Single Column Layout Container -->
+<div class="max-w-5xl mx-auto space-y-8">
+<!-- Client Section -->
+<section class="bg-surface-container-low rounded-xl p-8">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-xs font-bold tracking-[0.1em] text-outline uppercase">Odběratel</h2>
+<button class="text-primary text-sm font-semibold flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-sm">person_add</span>
+                        Nový klient
+                    </button>
+</div>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-12 pr-4 py-4 bg-white border-none rounded-md focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline-variant/80 shadow-sm transition-all" placeholder="Vyhledejte odběratele podle názvu nebo IČO..." type="text"/>
+</div>
+<div class="mt-6 flex gap-8">
+<div class="flex-1 p-4 rounded-lg bg-white/40 border border-white/60">
+<p class="text-[10px] font-bold text-outline uppercase mb-2">Fakturační adresa</p>
+<p class="text-on-surface-variant italic text-sm">Vyberte klienta pro zobrazení údajů</p>
+</div>
+<div class="flex-1 p-4 rounded-lg bg-white/40 border border-white/60">
+<p class="text-[10px] font-bold text-outline uppercase mb-2">Identifikace</p>
+<p class="text-on-surface-variant italic text-sm">IČO, DIČ</p>
+</div>
+</div>
+</section>
+<!-- Dates & Payment Info (Moved from Sidebar) -->
+<section class="bg-white rounded-xl shadow-sm p-8 grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Dates -->
+<div class="space-y-6">
+<h2 class="text-xs font-bold tracking-[0.1em] text-outline uppercase">Datumy</h2>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Datum vystavení</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">calendar_today</span>
+<input class="w-full px-4 py-3 bg-surface-container-low border-none rounded-md focus:ring-2 focus:ring-primary/20" type="text" value="14. 05. 2024"/>
+</div>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Datum splatnosti</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">event_available</span>
+<input class="w-full px-4 py-3 bg-surface-container-low border-none rounded-md focus:ring-2 focus:ring-primary/20 font-semibold text-primary" type="text" value="28. 05. 2024"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Payment Info -->
+<div class="space-y-6">
+<h2 class="text-xs font-bold tracking-[0.1em] text-outline uppercase">Platební údaje</h2>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Bankovní účet</label>
+<select class="w-full px-4 py-3 bg-surface-container-low border-none rounded-md focus:ring-2 focus:ring-primary/20 appearance-none">
+<option>Raiffeisenbank (CZK) ...8890</option>
+<option>KB (EUR) ...1120</option>
+</select>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-outline uppercase mb-1 ml-1">Variabilní symbol</label>
+<input class="w-full px-4 py-3 bg-surface-container-low border-none rounded-md focus:ring-2 focus:ring-primary/20 tabular-nums" type="text" value="20260009"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Items Table Section -->
+<section class="bg-white rounded-xl shadow-sm overflow-hidden">
+<div class="px-8 py-6 border-b border-surface-container">
+<h2 class="text-xs font-bold tracking-[0.1em] text-outline uppercase">Položky faktury</h2>
+</div>
+<div class="p-0 overflow-x-auto">
+<table class="w-full border-collapse min-w-[800px]">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="text-left py-4 px-8 text-[10px] font-bold text-outline uppercase tracking-wider">Popis položky</th>
+<th class="text-right py-4 px-4 text-[10px] font-bold text-outline uppercase tracking-wider w-32">Cena / j.</th>
+<th class="text-center py-4 px-4 text-[10px] font-bold text-outline uppercase tracking-wider w-24">Množství</th>
+<th class="text-left py-4 px-4 text-[10px] font-bold text-outline uppercase tracking-wider w-24">Jedn.</th>
+<th class="text-right py-4 px-8 text-[10px] font-bold text-outline uppercase tracking-wider w-40">Celkem</th>
+<th class="py-4 px-4 w-12"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<tr class="hover:bg-surface-container-low/30 transition-colors">
+<td class="py-5 px-8">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 font-medium" type="text" value="Konzultační služby - Auditor Pro"/>
+</td>
+<td class="py-5 px-4">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-right tabular-nums" type="text" value="2 500,00"/>
+</td>
+<td class="py-5 px-4">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-center tabular-nums" type="text" value="8"/>
+</td>
+<td class="py-5 px-4">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-left" type="text" value="hod"/>
+</td>
+<td class="py-5 px-8 text-right font-bold tabular-nums">20 000,00 Kč</td>
+<td class="py-5 px-4">
+<button class="text-outline-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/30 transition-colors">
+<td class="py-5 px-8">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 font-medium text-outline-variant italic" placeholder="Zadejte název položky..." type="text"/>
+</td>
+<td class="py-5 px-4">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-right tabular-nums text-outline-variant" type="text" value="0,00"/>
+</td>
+<td class="py-5 px-4">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-center tabular-nums text-outline-variant" type="text" value="1"/>
+</td>
+<td class="py-5 px-4">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-left text-outline-variant" type="text" value="ks"/>
+</td>
+<td class="py-5 px-8 text-right font-bold tabular-nums text-outline-variant">0,00 Kč</td>
+<td class="py-5 px-4">
+<button class="text-outline-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-6">
+<button class="flex items-center gap-2 px-4 py-2 text-primary font-bold hover:bg-primary/5 rounded-md transition-all">
+<span class="material-symbols-outlined">add</span>
+                            Nový řádek
+                        </button>
+</div>
+</div>
+</section>
+<!-- Summary Section (Integrated Bottom Bar) -->
+<section class="bg-primary-container text-on-primary-container rounded-2xl shadow-2xl shadow-primary/30 relative overflow-hidden group">
+<!-- Decorative background texture -->
+<div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700"></div>
+<div class="absolute -bottom-8 -left-8 w-32 h-32 bg-on-primary-container/5 rounded-full blur-2xl"></div>
+<div class="relative z-10 p-8 flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="flex items-center gap-8">
+<div>
+<p class="text-xs font-black uppercase tracking-[0.2em] opacity-70 mb-2">Celkem k úhradě</p>
+<div class="flex items-baseline gap-2">
+<p class="text-5xl font-black tracking-tighter tabular-nums">20 000,00</p>
+<p class="text-xl font-medium opacity-80 uppercase">Kč</p>
+</div>
+</div>
+<div class="h-12 w-[1px] bg-white/20 hidden md:block"></div>
+<div class="hidden sm:block">
+<p class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-1">Základ daně (0%)</p>
+<p class="text-lg font-bold tabular-nums">20 000,00 Kč</p>
+</div>
+</div>
+<button class="w-full md:w-auto px-12 py-4 bg-white text-primary font-black rounded-xl hover:shadow-lg active:scale-[0.98] transition-all whitespace-nowrap">
+                        VYSTAVIT FAKTURU
+                    </button>
+</div>
+</section>
+<!-- Helper Info -->
+<div class="p-6 bg-surface-container rounded-xl flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+                    Faktura bude automaticky odeslána na e-mail odběratele ihned po uložení, pokud máte tuto funkci aktivní v nastavení.
+                </p>
+</div>
+</div>
+<!-- Footer Logo/Branding -->
+<footer class="mt-24 pt-12 border-t border-surface-container flex justify-center opacity-30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xl">verified_user</span>
+<p class="text-sm font-bold tracking-widest uppercase">The Auditor Secure System</p>
+</div>
+</footer>
+</main>
+</div>
+</body></html>

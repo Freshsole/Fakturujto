@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Prázdný title = méně textu v záhlaví tisku (Chrome). URL a datum úplně skrýt jen vypnutím „Záhlaví a zápatí“ v dialogu tisku. -->
+    <title>&#8203;</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-fixed-dim": "#f4aeff",
+              "surface-container-high": "#e9e7ea",
+              "tertiary-container": "#c6a851",
+              outline: "#827282",
+              "outline-variant": "#d4c1d3",
+              "surface-variant": "#e3e2e5",
+              "on-tertiary-fixed": "#241a00",
+              "on-secondary": "#ffffff",
+              background: "#fbf9fc",
+              "on-tertiary": "#ffffff",
+              "error-container": "#ffdad6",
+              "primary-fixed": "#fdd6ff",
+              "on-background": "#1b1b1e",
+              "surface-tint": "#9920b8",
+              "secondary-fixed-dim": "#d8bfd7",
+              "on-secondary-container": "#735e73",
+              "secondary-container": "#f5daf4",
+              "on-surface-variant": "#504251",
+              "inverse-on-surface": "#f2f0f3",
+              "surface-bright": "#fbf9fc",
+              primary: "#71008c",
+              "on-secondary-fixed": "#261628",
+              "on-error-container": "#93000a",
+              "primary-container": "#9317b2",
+              "inverse-primary": "#f4aeff",
+              surface: "#fbf9fc",
+              "secondary-fixed": "#f5daf4",
+              "tertiary-fixed-dim": "#e3c469",
+              "on-error": "#ffffff",
+              "on-primary-container": "#f7bdff",
+              "surface-container-lowest": "#ffffff",
+              "on-primary-fixed": "#340042",
+              "on-secondary-fixed-variant": "#544155",
+              "surface-container-highest": "#e3e2e5",
+              "surface-container-low": "#f5f3f6",
+              error: "#ba1a1a",
+              "on-primary-fixed-variant": "#790095",
+              "on-tertiary-container": "#4f3d00",
+              "on-primary": "#ffffff",
+              secondary: "#6c586d",
+              "on-tertiary-fixed-variant": "#584400",
+              "on-surface": "#1b1b1e",
+              "tertiary-fixed": "#ffe08b",
+              "surface-container": "#efedf0",
+              "inverse-surface": "#303033",
+              "surface-dim": "#dbd9dc",
+              tertiary: "#735c06",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "2xl": "1.5rem",
+              full: "9999px",
+            },
+            fontFamily: {
+              headline: ["Inter"],
+              body: ["Inter"],
+              label: ["Inter"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+      .tabular-numbers {
+        font-variant-numeric: tabular-nums;
+      }
+      .invoice-pre-items {
+        max-height: 148.5mm;
+      }
+      @media print {
+        @page {
+          size: A4;
+          margin: 10mm;
+        }
+        body {
+          background: #fff !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .print-hidden {
+          display: none !important;
+        }
+        /* Tisk má často šířku pod 768px — bez tohoto by se vše skládalo pod sebe (md:/sm: neplatí). */
+        .invoice-pre-items {
+          max-height: none !important;
+          overflow: visible !important;
+          margin-bottom: 1rem;
+        }
+        .invoice-main {
+          display: block !important;
+          min-height: 0 !important;
+          max-width: 100% !important;
+        }
+        .invoice-main > section {
+          flex: none !important;
+          overflow: visible !important;
+        }
+        .invoice-page-header {
+          display: flex !important;
+          flex-direction: row !important;
+          flex-wrap: wrap !important;
+          justify-content: space-between !important;
+          align-items: flex-end !important;
+          gap: 1rem !important;
+        }
+        .invoice-title-block {
+          flex: 1 1 auto;
+          min-width: 10rem;
+        }
+        .invoice-parties {
+          display: grid !important;
+          grid-template-columns: 1fr 1fr !important;
+          gap: 0.5rem !important;
+          align-items: stretch !important;
+        }
+        .invoice-payment-wrap {
+          display: grid !important;
+          grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) !important;
+          gap: 0.5rem !important;
+          align-items: stretch !important;
+        }
+        /* Tailwind md:col-span-2 ve 2sloupcové mřížce = span přes celou šířku → překryv sekcí. */
+        .invoice-payment-wrap > .invoice-payment-box {
+          grid-column: 1 / 2 !important;
+          min-width: 0;
+        }
+        .invoice-payment-wrap > .invoice-dates-column {
+          grid-column: 2 / 3 !important;
+        }
+        .invoice-payment-fields {
+          display: grid !important;
+          grid-template-columns: 1fr 1fr !important;
+          gap: 0.5rem 1rem !important;
+        }
+        .invoice-payment-fields .invoice-iban-row {
+          grid-column: 1 / -1 !important;
+        }
+        .invoice-dates-column {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 0.5rem !important;
+          min-width: 0 !important;
+        }
+        .invoice-summary-block {
+          break-inside: avoid;
+          margin-bottom: 1rem !important;
+        }
+        .invoice-items-section {
+          overflow: visible !important;
+          break-inside: auto;
+        }
+        .invoice-total-qr {
+          display: grid !important;
+          grid-template-columns: minmax(0, 1fr) auto !important;
+          gap: 1rem !important;
+          align-items: center !important;
+        }
+        .invoice-qr-cell {
+          justify-self: end !important;
+        }
+        .invoice-contact-row {
+          display: flex !important;
+          flex-direction: row !important;
+          flex-wrap: wrap !important;
+          gap: 0.75rem 1.5rem !important;
+        }
+        main {
+          max-width: none !important;
+          padding: 0 !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-background text-on-background min-h-screen">
+    <main
+      class="invoice-main max-w-5xl mx-auto p-4 md:p-6 text-[13px] leading-snug flex flex-col min-h-screen min-h-0 print:min-h-0"
+    >
+      <div class="invoice-pre-items min-h-0 overflow-y-auto overflow-x-hidden mb-4">
+        <header class="invoice-page-header flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-3">
+          <div class="invoice-title-block">
+            <h1 class="text-xl md:text-2xl font-extrabold tracking-tight text-on-background mb-1">
+              Faktura
+            </h1>
+            <p class="text-sm font-semibold tabular-numbers text-on-background mb-3">
+              <span class="text-[0.625rem] uppercase tracking-[0.05em] font-semibold text-slate-500 block mb-0.5"
+                >Číslo dokladu (variabilní symbol)</span
+              >
+              {{VARIABLE_SYMBOL}}
+            </p>
+          </div>
+        </header>
+
+        <section class="invoice-parties grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
+          <div class="bg-surface-container-low rounded-xl p-3">
+            <p class="text-[0.625rem] uppercase tracking-[0.05em] font-bold text-primary mb-1.5">Dodavatel</p>
+            <h2 class="text-sm font-bold mb-0.5">{{SUPPLIER_NAME}}</h2>
+            <p class="text-xs text-on-surface-variant">{{SUPPLIER_ADDRESS}}</p>
+            <div class="space-y-0.5 text-xs text-on-surface-variant mt-1 mb-2">
+              <p>IČ: {{SUPPLIER_IC}}</p>
+              <p>{{SUPPLIER_VAT_LINE}}</p>
+            </div>
+            <div class="pt-2 border-t border-outline-variant/20">
+              <p class="text-[0.625rem] leading-tight italic text-slate-400">
+                Podnikatel je zapsán v živnostenském rejstříku.
+              </p>
+            </div>
+          </div>
+          <div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/15">
+            <p class="text-[0.625rem] uppercase tracking-[0.05em] font-bold text-slate-500 mb-1.5">Odběratel</p>
+            <h2 class="text-sm font-bold mb-0.5">{{BUYER_NAME}}</h2>
+            <p class="text-xs text-on-surface-variant">{{BUYER_ADDRESS}}</p>
+            <div class="space-y-0.5 text-xs text-on-surface-variant mt-1">
+              <p>IČ: {{BUYER_IC}}</p>
+              <p>{{BUYER_DIC_LINE}}</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="invoice-payment-wrap grid grid-cols-1 md:grid-cols-3 gap-2">
+          <div class="invoice-payment-box bg-surface-container-low md:col-span-2 rounded-xl p-3">
+            <p class="text-[0.625rem] uppercase tracking-[0.05em] font-bold text-slate-500 mb-2">Platební údaje</p>
+            <div class="invoice-payment-fields grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+              <div>
+                <p class="text-[0.625rem] text-slate-400 uppercase tracking-wider mb-0.5">Účet</p>
+                <p class="font-semibold text-xs tabular-numbers">{{BANK_ACCOUNT}}</p>
+              </div>
+              <div>
+                <p class="text-[0.625rem] text-slate-400 uppercase tracking-wider mb-0.5">Metoda</p>
+                <p class="font-semibold text-xs">{{PAYMENT_METHOD}}</p>
+              </div>
+              <div class="invoice-iban-row sm:col-span-2">
+                <p class="text-[0.625rem] text-slate-400 uppercase tracking-wider mb-0.5">IBAN</p>
+                <p class="font-semibold text-xs tabular-numbers tracking-wide">{{IBAN}}</p>
+              </div>
+              <div>
+                <p class="text-[0.625rem] text-slate-400 uppercase tracking-wider mb-0.5">SWIFT / BIC</p>
+                <p class="font-semibold text-xs">{{SWIFT}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="invoice-dates-column flex flex-col gap-2">
+            <div
+              class="bg-surface-container-lowest rounded-xl p-3 flex-1 flex flex-col justify-center border border-outline-variant/15"
+            >
+              <p class="text-[0.625rem] uppercase tracking-[0.05em] font-bold text-slate-500 mb-0.5">Vystaveno</p>
+              <p class="text-sm font-bold tabular-numbers">{{ISSUE_DATE}}</p>
+            </div>
+            <div
+              class="bg-primary-container rounded-xl p-3 flex-1 flex flex-col justify-center text-on-primary-container"
+            >
+              <p class="text-[0.625rem] uppercase tracking-[0.05em] font-bold opacity-80 mb-0.5">Splatnost</p>
+              <p class="text-base font-black tabular-numbers">{{DUE_DATE}}</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="invoice-summary-block flex flex-col gap-3 items-start mb-4">
+        <div class="w-full">
+          <div
+            class="invoice-total-qr bg-on-background text-background rounded-2xl p-4 shadow-lg relative overflow-hidden grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 md:gap-5 items-center md:items-stretch min-h-0"
+          >
+            <div
+              class="absolute -right-8 -top-8 w-28 h-28 bg-primary opacity-20 rounded-full blur-2xl pointer-events-none"
+            ></div>
+            <div class="relative z-10 flex flex-col justify-center min-w-0">
+              <p class="text-[0.625rem] uppercase tracking-[0.15em] font-bold opacity-60 mb-1">CELKEM K ÚHRADĚ</p>
+              <h4 class="text-2xl md:text-3xl font-black tracking-tight tabular-numbers leading-none">
+                {{TOTAL_AMOUNT}}
+              </h4>
+              <p class="text-xs font-medium opacity-80 mt-0.5">českých korun</p>
+            </div>
+            <div class="invoice-qr-cell relative z-10 flex items-center justify-center md:justify-end self-stretch">
+              <img
+                src="{{QR_DATA_URL}}"
+                alt="QR platba"
+                width="240"
+                height="240"
+                class="h-full w-auto max-h-[120px] md:max-h-[100px] aspect-square object-contain object-center md:object-right invert select-none pointer-events-none"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="w-full">{{CONTACT_BLOCK}}</div>
+      </section>
+
+      <section class="invoice-items-section mb-4 overflow-hidden min-h-0 flex-1">
+        <div class="flex justify-between items-center mb-2 px-1">
+          <h3 class="text-sm font-bold tracking-tight">Položky faktury</h3>
+          <span
+            class="bg-surface-container-high px-2 py-0.5 rounded-full text-[0.625rem] font-bold text-slate-600"
+            >{{LINE_COUNT_LABEL}}</span
+          >
+        </div>
+        <div class="w-full">
+          <div class="grid grid-cols-12 gap-2 px-2 py-1.5 border-b border-outline-variant/30 text-[0.625rem]">
+            <div class="col-span-6 uppercase tracking-[0.05em] font-bold text-slate-400">Popis úkonu</div>
+            <div class="col-span-2 text-right uppercase tracking-[0.05em] font-bold text-slate-400">Množství</div>
+            <div class="col-span-2 text-right uppercase tracking-[0.05em] font-bold text-slate-400">Cena / j.</div>
+            <div class="col-span-2 text-right uppercase tracking-[0.05em] font-bold text-slate-400">Celkem</div>
+          </div>
+          <div class="space-y-1">{{LINE_ITEMS_HTML}}</div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

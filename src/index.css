@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Geist Sans";
+  src: url("/fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply text-on-surface antialiased font-sans text-sm leading-geist-body;
+  background-color: #fbf9fc;
+  background-image:
+    radial-gradient(ellipse 100% 60% at 0% -10%, rgba(147, 23, 178, 0.07), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 100% 0%, rgba(113, 0, 140, 0.05), transparent 50%),
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(147, 23, 178, 0.04), transparent 45%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background-color: rgba(147, 23, 178, 0.18);
+  color: #1b1b1e;
+}
+
+/* Geist: rychlé přechody (micro-interactions) */
+@layer utilities {
+  .geist-transition {
+    transition: all 0.2s ease;
+  }
+
+  /**
+   * Editorial panely: bez tvrdého obrysu — vrstvení + „ghost“ ring (outline ~15 %).
+   */
+  .app-panel {
+    @apply rounded-xl bg-surface-container-lowest/95 backdrop-blur-[24px] shadow-editorial-sm ring-1 ring-outline-variant/[0.15] border-0 geist-transition;
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20;
+  font-size: 1.125rem;
+  vertical-align: middle;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.auth-editorial-gradient {
+  background: linear-gradient(135deg, #71008c 0%, #9317b2 100%);
+}
+
+.subtle-mesh-auth {
+  background-color: #fbf9fc;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(147, 23, 178, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(113, 0, 140, 0.05) 0px, transparent 50%);
+}

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="light" lang="cs"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modern Auditor - Vydané faktury</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error": "#ba1a1a",
+                      "surface": "#fbf9fc",
+                      "surface-variant": "#e3e2e5",
+                      "surface-tint": "#9920b8",
+                      "surface-dim": "#dbd9dc",
+                      "inverse-primary": "#f4aeff",
+                      "on-tertiary-container": "#4f3d00",
+                      "tertiary": "#735c06",
+                      "surface-container-highest": "#e3e2e5",
+                      "outline-variant": "#d4c1d3",
+                      "tertiary-container": "#c6a851",
+                      "secondary": "#6c586d",
+                      "on-secondary": "#ffffff",
+                      "surface-container-high": "#e9e7ea",
+                      "outline": "#827282",
+                      "tertiary-fixed-dim": "#e3c469",
+                      "on-surface": "#1b1b1e",
+                      "on-tertiary-fixed": "#241a00",
+                      "inverse-on-surface": "#f2f0f3",
+                      "tertiary-fixed": "#ffe08b",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed": "#340042",
+                      "inverse-surface": "#303033",
+                      "on-error-container": "#93000a",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed-dim": "#d8bfd7",
+                      "background": "#fbf9fc",
+                      "primary-fixed": "#fdd6ff",
+                      "primary": "#71008c",
+                      "on-background": "#1b1b1e",
+                      "primary-fixed-dim": "#f4aeff",
+                      "surface-container": "#efedf0",
+                      "surface-container-low": "#f5f3f6",
+                      "surface-bright": "#fbf9fc",
+                      "on-error": "#ffffff",
+                      "secondary-fixed": "#f5daf4",
+                      "secondary-container": "#f5daf4",
+                      "error-container": "#ffdad6",
+                      "on-secondary-container": "#735e73",
+                      "on-primary-fixed-variant": "#790095",
+                      "on-secondary-fixed": "#261628",
+                      "on-tertiary-fixed-variant": "#584400",
+                      "on-secondary-fixed-variant": "#544155",
+                      "on-primary": "#ffffff",
+                      "on-surface-variant": "#504251",
+                      "primary-container": "#9317b2",
+                      "on-primary-container": "#f7bdff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Inter"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- SideNavBar (Authority: JSON & Design System) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#f5f3f6] dark:bg-[#1b1b1e] flex flex-col py-8 px-4 gap-2 z-50">
+<div class="px-4 mb-8">
+<span class="text-lg font-black text-[#9317b2] tracking-tighter">Auditor Admin</span>
+<p class="text-[10px] uppercase tracking-[0.15em] text-[#0a010d]/40 font-bold mt-1">Premium Plan</p>
+</div>
+<nav class="flex-grow space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-[#0a010d]/70 transition-all duration-200 ease-in-out hover:bg-[#9317b2]/5 rounded-xl font-['Inter'] text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>P\u0159ehled</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#0a010d]/70 transition-all duration-200 ease-in-out hover:bg-[#9317b2]/5 rounded-xl font-['Inter'] text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span>Nov\u00e1 faktura</span>
+</a>
+<!-- ACTIVE TAB: Faktury (Direct Match) -->
+<a class="flex items-center gap-3 px-4 py-3 bg-white text-[#9317b2] shadow-sm rounded-xl font-bold font-['Inter'] text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span>Faktury</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#0a010d]/70 transition-all duration-200 ease-in-out hover:bg-[#9317b2]/5 rounded-xl font-['Inter'] text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Klienti</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#0a010d]/70 transition-all duration-200 ease-in-out hover:bg-[#9317b2]/5 rounded-xl font-['Inter'] text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Nastaven\u00ed</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-[#0a010d]/5 pt-6 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-[#0a010d]/70 transition-all duration-200 ease-in-out hover:bg-[#9317b2]/5 rounded-xl font-['Inter'] text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#0a010d]/70 transition-all duration-200 ease-in-out hover:bg-[#9317b2]/5 rounded-xl font-['Inter'] text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+<div class="mt-4 px-4 py-4 bg-primary/5 rounded-2xl">
+<p class="text-xs font-semibold text-primary mb-2">Potřebujete více?</p>
+<button class="w-full py-2 bg-primary text-white rounded-lg text-xs font-bold hover:bg-primary-container transition-colors">Upgrade Plan</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen p-8 md:p-12">
+<!-- Header & Title -->
+<header class="flex justify-between items-end mb-10">
+<div class="space-y-1">
+<nav class="flex items-center gap-2 text-xs font-medium text-on-surface/40 mb-2">
+<span>Dokumenty</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary">Vydané faktury</span>
+</nav>
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface">Vydané faktury</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex -space-x-2">
+<img alt="User" class="w-10 h-10 rounded-full border-2 border-surface object-cover" data-alt="professional portrait of a confident female auditor in corporate attire with a soft office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAli0eh_OhQE_5T7B-K-N9ytyvY2BOxOlMN77jab4VD7usjDU0b_0ntHHqahSDlhA_Emtq4sI57Ftl4LZ5Vq5sVU289bvLLSXoHMeAQq_XsN25Yjx_xCJifhefXJWYsxPQdeugg-ZA340WWNR88enjbGKRSnkynaafuHjXSiidrUbi1uxUuNPLfCpe2IDjx-ShIKoXXbVOLll_FFhi03oc7sI-3zTt0Rky6QSAmxuMcTOudmro3-6uLtiWErrcebzEFtL5N_ySDT2o"/>
+<img alt="Client" class="w-10 h-10 rounded-full border-2 border-surface object-cover" data-alt="close-up portrait of a male business executive with a friendly expression in a modern bright workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwUmBkuPJNf8fWjDnwHPNyABlgSsNYRcnlUWYo4Tyi3fx2cYhGTcTH0HZ7oRgiwHa1tMQdJf5iL2YMczUdLjb6VNsYtpexDvT7fHFmO5CH8FyDPgDYlImofVmrFXtVnup4-WwfwoNg2SEGdOxfcrJ5h6_yGvVfbIrUIMHBRsyVZ2ZLDw7ul5fWe4HxMF7lCGvtoGLGACMcg4Mu2iNqiCdbNrr2vipx8U1PbNa23qPYooRsbcxQL3hYju7ABkTW69aFMVQXYoGDAx8"/>
+</div>
+<button class="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                    Vytvořit novou
+                </button>
+</div>
+</header>
+<!-- Search & Filter Bar -->
+<div class="flex flex-col md:flex-row gap-6 items-center justify-between mb-8 bg-surface-container-low p-2 rounded-2xl">
+<!-- Left: Search -->
+<div class="relative w-full md:w-96 group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface/40 group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-on-surface/30" placeholder="Hledat podle VS nebo odběratele..." type="text"/>
+</div>
+<!-- Middle: Tabs -->
+<div class="flex bg-surface-container-high/50 p-1 rounded-xl">
+<button class="px-5 py-2.5 rounded-lg text-sm font-semibold bg-white text-primary shadow-sm">Všechny</button>
+<button class="px-5 py-2.5 rounded-lg text-sm font-medium text-on-surface/60 hover:text-on-surface transition-colors">Uhrazené</button>
+<button class="px-5 py-2.5 rounded-lg text-sm font-medium text-on-surface/60 hover:text-on-surface transition-colors">Neuhrazené</button>
+<button class="px-5 py-2.5 rounded-lg text-sm font-medium text-on-surface/60 hover:text-on-surface transition-colors">Po splatnosti</button>
+</div>
+<!-- Right: Export -->
+<button class="flex items-center gap-2 px-6 py-3 text-primary font-bold hover:bg-primary/5 rounded-xl transition-colors">
+<span class="material-symbols-outlined" data-icon="ios_share">ios_share</span>
+                Exportovat do CSV
+            </button>
+</div>
+<!-- Invoices Table -->
+<div class="bg-surface-container-lowest rounded-[1.5rem] shadow-[0_4px_40px_rgba(113,0,140,0.04)] overflow-hidden">
+<table class="w-full border-collapse">
+<thead>
+<tr class="text-left border-b border-outline-variant/15">
+<th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.1em] text-on-surface/40">Číslo dokladu</th>
+<th class="px-6 py-5 text-[10px] font-black uppercase tracking-[0.1em] text-on-surface/40">Stav</th>
+<th class="px-6 py-5 text-[10px] font-black uppercase tracking-[0.1em] text-on-surface/40">Popis</th>
+<th class="px-6 py-5 text-[10px] font-black uppercase tracking-[0.1em] text-on-surface/40">Odběratel</th>
+<th class="px-6 py-5 text-[10px] font-black uppercase tracking-[0.1em] text-on-surface/40">Vystaveno</th>
+<th class="px-6 py-5 text-[10px] font-black uppercase tracking-[0.1em] text-on-surface/40">Splatnost</th>
+<th class="px-6 py-5 text-[10px] font-black uppercase tracking-[0.1em] text-on-surface/40 text-right">Cena</th>
+<th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.1em] text-on-surface/40 text-right">Akce</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1: Paid -->
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-6 font-bold text-sm tabular-nums">20260008</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-600">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</span>
+</td>
+<td class="px-6 py-6 text-sm font-medium text-on-surface/80">Cold calling</td>
+<td class="px-6 py-6 text-sm text-on-surface/60">Czech Video Center a.s.</td>
+<td class="px-6 py-6 text-sm tabular-nums text-on-surface/40">12.02.2026</td>
+<td class="px-6 py-6 text-sm tabular-nums text-on-surface/40">26.02.2026</td>
+<td class="px-6 py-6 text-right font-bold text-sm tabular-nums">64 000,00 Kč</td>
+<td class="px-8 py-6">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Upravit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Stáhnout PDF">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Uhradit">
+<span class="material-symbols-outlined text-[20px]">credit_card</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Overdue -->
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-6 font-bold text-sm tabular-nums text-error">20260007</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-error/5 text-error">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">cancel</span>
+</span>
+</td>
+<td class="px-6 py-6 text-sm font-medium text-on-surface/80">Tvorba webových stránek</td>
+<td class="px-6 py-6 text-sm text-on-surface/60">Pragmatika s.r.o.</td>
+<td class="px-6 py-6 text-sm tabular-nums text-on-surface/40">01.02.2026</td>
+<td class="px-6 py-6 text-sm tabular-nums text-error/60 font-semibold">15.02.2026</td>
+<td class="px-6 py-6 text-right font-bold text-sm tabular-nums">128 500,00 Kč</td>
+<td class="px-8 py-6">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Upravit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Stáhnout PDF">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Uhradit">
+<span class="material-symbols-outlined text-[20px]">credit_card</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Unpaid -->
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-6 font-bold text-sm tabular-nums">20260006</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-outline-variant/20 text-on-surface/40">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</span>
+</td>
+<td class="px-6 py-6 text-sm font-medium text-on-surface/80">UX Audit &amp; Konzultace</td>
+<td class="px-6 py-6 text-sm text-on-surface/60">Design Systems Co.</td>
+<td class="px-6 py-6 text-sm tabular-nums text-on-surface/40">15.02.2026</td>
+<td class="px-6 py-6 text-sm tabular-nums text-on-surface/40">01.03.2026</td>
+<td class="px-6 py-6 text-right font-bold text-sm tabular-nums">42 200,00 Kč</td>
+<td class="px-8 py-6">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Upravit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Stáhnout PDF">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Uhradit">
+<span class="material-symbols-outlined text-[20px]">credit_card</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Paid -->
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-6 font-bold text-sm tabular-nums">20260005</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-600">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</span>
+</td>
+<td class="px-6 py-6 text-sm font-medium text-on-surface/80">Marketing Strategy</td>
+<td class="px-6 py-6 text-sm text-on-surface/60">GrowthLabs s.r.o.</td>
+<td class="px-6 py-6 text-sm tabular-nums text-on-surface/40">20.01.2026</td>
+<td class="px-6 py-6 text-sm tabular-nums text-on-surface/40">03.02.2026</td>
+<td class="px-6 py-6 text-right font-bold text-sm tabular-nums">15 900,00 Kč</td>
+<td class="px-8 py-6">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Upravit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Stáhnout PDF">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+<button class="p-2 hover:bg-primary/10 rounded-lg text-on-surface/60 hover:text-primary" title="Uhradit">
+<span class="material-symbols-outlined text-[20px]">credit_card</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination-ish Footer -->
+<div class="px-8 py-6 bg-surface-container-low/30 border-t border-outline-variant/10 flex justify-between items-center">
+<p class="text-xs font-medium text-on-surface/40">Zobrazeno 1-4 z 28 faktur</p>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg border border-outline-variant/20 hover:bg-white transition-colors disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="p-2 rounded-lg border border-outline-variant/20 hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bento Stats Overlay (Airbnb Aesthetic) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+<div class="bg-primary-container p-8 rounded-[2rem] text-on-primary-container flex flex-col justify-between min-h-[160px] hover:scale-[1.01] transition-transform">
+<span class="text-[10px] font-black uppercase tracking-[0.2em] opacity-70">Celkem neuhrazeno</span>
+<div class="space-y-1">
+<h2 class="text-3xl font-black tracking-tighter">170 700,00 Kč</h2>
+<p class="text-xs opacity-80">3 faktury čekají na platbu</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-8 rounded-[2rem] flex flex-col justify-between min-h-[160px] hover:scale-[1.01] transition-transform">
+<span class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface/40">Uhrazeno tento měsíc</span>
+<div class="space-y-1">
+<h2 class="text-3xl font-black tracking-tighter text-on-surface">342 000,00 Kč</h2>
+<p class="text-xs text-emerald-600 font-bold">+12 % oproti lednu</p>
+</div>
+</div>
+<div class="relative overflow-hidden group bg-[#1b1b1e] rounded-[2rem] min-h-[160px] hover:scale-[1.01] transition-transform p-8 flex flex-col justify-between">
+<div class="absolute inset-0 z-0 opacity-20">
+<img alt="Dashboard stats" class="w-full h-full object-cover grayscale" data-alt="high-angle shot of professional accounting workspace with paper reports and a sleek laptop in soft warm light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXevYOePZVQWjbEiPBLSTokzYcKvgGLfxso8sU1kps1k0jKSl_aJABYdN1BFzN14B1GM82AyJ-vMZv3Y5JZq5V3hkf6jg5eNpprE20-LMvEWQlWUjb4nwhBCR3Mq4oPxSZb-jzzumE013GRaI-vr8nBYxmCt-rppermy8xPcLk6vfMMwfAk_oQHsce-iEsQemPT9qeMXXOIt8hheOWx5r_vn_vXZ2fsYOaieC86an6Q6BnsvKTC8uw2YRBTp_a4QcuDL1Wdfz16to"/>
+</div>
+<span class="relative z-10 text-[10px] font-black uppercase tracking-[0.2em] text-white/50">Roční výhled</span>
+<div class="relative z-10">
+<h2 class="text-3xl font-black tracking-tighter text-white">4.2M Kč</h2>
+<div class="h-1 w-full bg-white/10 rounded-full mt-3 overflow-hidden">
+<div class="h-full w-[65%] bg-primary rounded-full"></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB Suppression Logic: Not primary screen for FAB, so it's hidden -->
+</body></html>
