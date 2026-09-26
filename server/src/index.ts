@@ -2,11 +2,12 @@ import "dotenv/config";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { authRouter } from "./routes/auth.js";
 import { invoicesRouter } from "./routes/invoices.js";
 import { publicRouter } from "./routes/public.js";
@@ -23,6 +24,19 @@ async function runMigrations() {
   const migrationsFolder = path.resolve(__dirname, "../drizzle");
   await migrate(db, { migrationsFolder });
   await client.end();
+}
+
+function resolveStaticDir(): string | null {
+  const candidates = [
+    process.env.STATIC_DIR,
+    path.resolve(__dirname, "../public"),
+    path.resolve(__dirname, "../../dist"),
+  ].filter((x): x is string => typeof x === "string" && x.length > 0);
+
+  for (const dir of candidates) {
+    if (fs.existsSync(path.join(dir, "index.html"))) return dir;
+  }
+  return null;
 }
 
 async function main() {
@@ -64,6 +78,25 @@ async function main() {
   app.use("/api/invoices", invoicesRouter);
   app.use("/api/supplier", supplierRouter);
   app.use("/api/public", publicRouter);
+
+  app.use("/api", (_req, res) => {
+    res.status(404).json({ error: "Not found" });
+  });
+
+  const staticDir = resolveStaticDir();
+  if (staticDir) {
+    app.use(express.static(staticDir, { index: false, maxAge: "1h" }));
+    app.get("*", (req, res, next) => {
+      if (req.path.startsWith("/api")) {
+        next();
+        return;
+      }
+      res.sendFile(path.join(staticDir, "index.html"), (err) => {
+        if (err) next(err);
+      });
+    });
+    console.log(`Serving frontend from ${staticDir}`);
+  }
 
   app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     console.error(err);

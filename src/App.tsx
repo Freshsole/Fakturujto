@@ -59,7 +59,7 @@ import { BankAccountField } from "./components/BankAccountField";
 import { EditorialDateField } from "./components/EditorialDateField";
 import { findCzechBankByCode, isValidAccountBody, parseStoredBankAccount } from "./data/bank-codes";
 import { computeCzechIban, formatIbanSpaced } from "./lib/czech-iban";
-import fakturujtoLogoFull from "../Fakturujto logo full.svg";
+import fakturujtoLogoFull from "./assets/fakturujto-logo-full.svg";
 
 function emptyBuyer(): Buyer {
   return { name: "", address: "", ico: "", dic: "" };

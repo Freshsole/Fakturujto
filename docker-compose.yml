@@ -15,9 +15,10 @@ services:
       timeout: 5s
       retries: 10
 
-  api:
+  app:
     build:
-      context: ./server
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3001:3001"
     environment:
@@ -26,6 +27,7 @@ services:
       PORT: "3001"
       CORS_ORIGIN: "*"
       NODE_ENV: production
+      STATIC_DIR: /app/public
     depends_on:
       db:
         condition: service_healthy
