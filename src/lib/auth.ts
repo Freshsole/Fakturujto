@@ -1,3 +1,5 @@
+import { apiFetch, clearToken, getToken, setToken } from "./http";
+
 export type UserProfileSeed = {
   companyName: string;
   ico: string;
@@ -11,168 +13,105 @@ export type AppUser = {
   id: string;
   fullName: string;
   email: string;
-  password: string;
   role: UserRole;
   profile: UserProfileSeed;
   createdAt: string;
 };
 
-const LS_USERS = "fakturujto_users_v1";
-const LS_SESSION = "fakturujto_auth_session_v1";
+type AuthResponse = { token: string; user: AppUser };
+type MeResponse = { user: AppUser };
+type UsersResponse = { users: AppUser[] };
 
-function canUseStorage(): boolean {
-  return typeof window !== "undefined" && typeof localStorage !== "undefined";
+export function getSessionUserId(): string | null {
+  // Kept for callers that only need a presence check; source of truth is JWT + /me.
+  return getToken() ? "session" : null;
 }
 
-export function listUsers(): AppUser[] {
-  if (!canUseStorage()) return [];
-  const raw = localStorage.getItem(LS_USERS);
-  if (!raw) return [];
+export function clearSession(): void {
+  clearToken();
+}
+
+export async function fetchSessionUser(): Promise<AppUser | null> {
+  if (!getToken()) return null;
   try {
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    const users = parsed
-      .map((x): AppUser | null => {
-        if (!x || typeof x !== "object") return null;
-        const r = x as Record<string, unknown>;
-        if (typeof r.id !== "string" || typeof r.email !== "string") return null;
-        return {
-          id: r.id,
-          fullName: typeof r.fullName === "string" ? r.fullName : "",
-          email: r.email,
-          password: typeof r.password === "string" ? r.password : "",
-          role: r.role === "admin" ? "admin" : "user",
-          profile: {
-            companyName: typeof (r.profile as Record<string, unknown> | undefined)?.companyName === "string" ? ((r.profile as Record<string, unknown>).companyName as string) : "",
-            ico: typeof (r.profile as Record<string, unknown> | undefined)?.ico === "string" ? ((r.profile as Record<string, unknown>).ico as string) : "",
-            dic: typeof (r.profile as Record<string, unknown> | undefined)?.dic === "string" ? ((r.profile as Record<string, unknown>).dic as string) : "",
-            address:
-              typeof (r.profile as Record<string, unknown> | undefined)?.address === "string"
-                ? ((r.profile as Record<string, unknown>).address as string)
-                : "",
-          },
-          createdAt: typeof r.createdAt === "string" ? r.createdAt : new Date().toISOString(),
-        };
-      })
-      .filter((u): u is AppUser => u != null);
-
-    if (users.length > 0 && !users.some((u) => u.role === "admin")) {
-      users[0] = { ...users[0], role: "admin" };
-      saveUsers(users);
-    }
-
-    return users;
+    const data = await apiFetch<MeResponse>("/api/auth/me");
+    return data.user;
   } catch {
-    return [];
+    clearToken();
+    return null;
   }
 }
 
-function saveUsers(users: AppUser[]): void {
-  if (!canUseStorage()) return;
-  localStorage.setItem(LS_USERS, JSON.stringify(users));
+export async function registerUser(input: {
+  fullName: string;
+  email: string;
+  password: string;
+  profile?: Partial<UserProfileSeed>;
+}): Promise<AppUser> {
+  const data = await apiFetch<AuthResponse>("/api/auth/register", {
+    method: "POST",
+    auth: false,
+    body: {
+      fullName: input.fullName,
+      email: input.email,
+      password: input.password,
+      profile: input.profile,
+    },
+  });
+  setToken(data.token);
+  return data.user;
 }
 
-export function createUser(input: {
+export async function loginUser(email: string, password: string): Promise<AppUser> {
+  const data = await apiFetch<AuthResponse>("/api/auth/login", {
+    method: "POST",
+    auth: false,
+    body: { email, password },
+  });
+  setToken(data.token);
+  return data.user;
+}
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  await apiFetch<{ ok: boolean }>("/api/auth/password", {
+    method: "POST",
+    body: { currentPassword, newPassword },
+  });
+}
+
+export async function listUsers(): Promise<AppUser[]> {
+  const data = await apiFetch<UsersResponse>("/api/users");
+  return data.users;
+}
+
+export async function inviteUser(input: {
   fullName: string;
   email: string;
   password: string;
   role?: UserRole;
   profile?: Partial<UserProfileSeed>;
-}): AppUser {
-  const email = input.email.trim().toLowerCase();
-  const users = listUsers();
-  if (users.some((u) => u.email.toLowerCase() === email)) {
-    throw new Error("Uživatel s tímto e-mailem již existuje.");
-  }
-  const next: AppUser = {
-    id: crypto.randomUUID(),
-    fullName: input.fullName.trim(),
-    email,
-    password: input.password,
-    role: input.role ?? (users.length === 0 ? "admin" : "user"),
-    profile: {
-      companyName: input.profile?.companyName?.trim() || "",
-      ico: input.profile?.ico?.trim() || "",
-      dic: input.profile?.dic?.trim() || "",
-      address: input.profile?.address?.trim() || "",
+}): Promise<AppUser> {
+  const data = await apiFetch<{ user: AppUser }>("/api/users", {
+    method: "POST",
+    body: {
+      fullName: input.fullName,
+      email: input.email,
+      password: input.password,
+      role: input.role,
+      profile: input.profile,
     },
-    createdAt: new Date().toISOString(),
-  };
-  users.push(next);
-  saveUsers(users);
-  return next;
+  });
+  return data.user;
 }
 
-export function authenticateUser(email: string, password: string): AppUser {
-  const em = email.trim().toLowerCase();
-  const user = listUsers().find((u) => u.email.toLowerCase() === em && u.password === password);
-  if (!user) throw new Error("Neplatný e-mail nebo heslo.");
-  return user;
+export async function deleteUser(userId: string): Promise<void> {
+  await apiFetch<{ ok: boolean }>(`/api/users/${userId}`, { method: "DELETE" });
 }
 
-export function deleteUser(userId: string): void {
-  const users = listUsers();
-  const left = users.filter((u) => u.id !== userId);
-  if (left.length > 0 && !left.some((u) => u.role === "admin")) {
-    left[0] = { ...left[0], role: "admin" };
-  }
-  saveUsers(left);
+export async function updateUserRole(userId: string, role: UserRole): Promise<AppUser> {
+  const data = await apiFetch<{ user: AppUser }>(`/api/users/${userId}/role`, {
+    method: "PATCH",
+    body: { role },
+  });
+  return data.user;
 }
-
-export function updateUserRole(userId: string, role: UserRole): void {
-  const users = listUsers();
-  const idx = users.findIndex((u) => u.id === userId);
-  if (idx < 0) throw new Error("Uživatel nenalezen.");
-  const updated = [...users];
-  updated[idx] = { ...updated[idx], role };
-  if (!updated.some((u) => u.role === "admin")) {
-    throw new Error("V systému musí zůstat alespoň jeden administrátor.");
-  }
-  saveUsers(updated);
-}
-
-export function updatePasswordForUser(userId: string, newPassword: string): void {
-  const users = listUsers();
-  const idx = users.findIndex((u) => u.id === userId);
-  if (idx < 0) throw new Error("Uživatel nenalezen.");
-  users[idx] = { ...users[idx], password: newPassword };
-  saveUsers(users);
-}
-
-export function resetPasswordByEmail(email: string, newPassword: string): void {
-  const em = email.trim().toLowerCase();
-  const users = listUsers();
-  const idx = users.findIndex((u) => u.email.toLowerCase() === em);
-  if (idx < 0) throw new Error("Uživatel s tímto e-mailem neexistuje.");
-  users[idx] = { ...users[idx], password: newPassword };
-  saveUsers(users);
-}
-
-export function getSessionUserId(): string | null {
-  if (!canUseStorage()) return null;
-  const raw = localStorage.getItem(LS_SESSION);
-  if (!raw) return null;
-  try {
-    const parsed = JSON.parse(raw) as { userId?: string };
-    return typeof parsed.userId === "string" && parsed.userId.length > 0 ? parsed.userId : null;
-  } catch {
-    return null;
-  }
-}
-
-export function setSessionUserId(userId: string): void {
-  if (!canUseStorage()) return;
-  localStorage.setItem(LS_SESSION, JSON.stringify({ userId }));
-}
-
-export function clearSession(): void {
-  if (!canUseStorage()) return;
-  localStorage.removeItem(LS_SESSION);
-}
-
-export function getSessionUser(): AppUser | null {
-  const id = getSessionUserId();
-  if (!id) return null;
-  return listUsers().find((u) => u.id === id) ?? null;
-}
-

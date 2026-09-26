@@ -28,15 +28,14 @@ import {
   apiSaveSupplier,
 } from "./lib/api";
 import {
-  authenticateUser,
+  changePassword,
   clearSession,
-  createUser,
   deleteUser,
-  getSessionUser,
+  fetchSessionUser,
+  inviteUser,
   listUsers,
-  resetPasswordByEmail,
-  setSessionUserId,
-  updatePasswordForUser,
+  loginUser,
+  registerUser,
   updateUserRole,
   type AppUser,
   type UserRole,
@@ -901,12 +900,37 @@ export default function App() {
     setSupplierProfile(sup);
   }, []);
 
-  useEffect(() => {
-    const sessionUser = getSessionUser();
-    setUsers(listUsers());
-    setCurrentUser(sessionUser);
-    setAuthReady(true);
+  const refreshUsers = useCallback(async (asAdmin: boolean) => {
+    if (!asAdmin) {
+      setUsers([]);
+      return;
+    }
+    try {
+      setUsers(await listUsers());
+    } catch {
+      setUsers([]);
+    }
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const sessionUser = await fetchSessionUser();
+      if (cancelled) return;
+      setCurrentUser(sessionUser);
+      await refreshUsers(sessionUser?.role === "admin");
+      if (!cancelled) setAuthReady(true);
+    })().catch(() => {
+      if (!cancelled) {
+        setCurrentUser(null);
+        setUsers([]);
+        setAuthReady(true);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshUsers]);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -1090,11 +1114,10 @@ export default function App() {
     navigate(mode === "login" ? "/prihlaseni" : "/registrace");
   }
 
-  function handleLogin(email: string, password: string) {
-    const user = authenticateUser(email, password);
-    setSessionUserId(user.id);
+  async function handleLogin(email: string, password: string) {
+    const user = await loginUser(email, password);
     setCurrentUser(user);
-    setUsers(listUsers());
+    await refreshUsers(user.role === "admin");
     setErr(null);
     navigate("/prehled", { replace: true });
   }
@@ -1123,15 +1146,14 @@ export default function App() {
         /* registrace má i bez ARES pokračovat */
       }
     }
-    const user = createUser({
+    const user = await registerUser({
       fullName: input.fullName,
       email: input.email,
       password: input.password,
       profile,
     });
-    setUsers(listUsers());
-    setSessionUserId(user.id);
     setCurrentUser(user);
+    await refreshUsers(user.role === "admin");
     setErr(null);
     navigate("/prehled", { replace: true });
   }
@@ -1139,43 +1161,36 @@ export default function App() {
   function handleLogout() {
     clearSession();
     setCurrentUser(null);
+    setUsers([]);
     setInvoices([]);
     setSupplierProfile(null);
     setDraft(null);
     navigate("/prihlaseni", { replace: true });
   }
 
-  function handleDeleteUser(id: string) {
+  async function handleDeleteUser(id: string) {
     if (currentUser?.role !== "admin") throw new Error("Pouze administrátor může mazat uživatele.");
     if (currentUser?.id === id) {
       throw new Error("Nelze smazat právě přihlášeného uživatele.");
     }
-    deleteUser(id);
-    setUsers(listUsers());
+    await deleteUser(id);
+    await refreshUsers(true);
   }
 
-  function handleSetUserRole(id: string, role: UserRole) {
+  async function handleSetUserRole(id: string, role: UserRole) {
     if (currentUser?.role !== "admin") throw new Error("Pouze administrátor může měnit role.");
     if (currentUser?.id === id && role !== "admin") {
       throw new Error("Aktuální administrátor si nemůže odebrat roli admin.");
     }
-    updateUserRole(id, role);
-    const updatedUsers = listUsers();
-    setUsers(updatedUsers);
-    const refreshedSession = getSessionUser();
+    await updateUserRole(id, role);
+    await refreshUsers(true);
+    const refreshedSession = await fetchSessionUser();
     if (refreshedSession) setCurrentUser(refreshedSession);
   }
 
-  function handleResetPassword(email: string, newPassword: string) {
-    resetPasswordByEmail(email, newPassword);
-  }
-
-  function handleChangeOwnPassword(currentPassword: string, newPassword: string) {
+  async function handleChangeOwnPassword(currentPassword: string, newPassword: string) {
     if (!currentUser) throw new Error("Nejste přihlášen.");
-    const verified = authenticateUser(currentUser.email, currentPassword);
-    if (!verified) throw new Error("Neplatné aktuální heslo.");
-    updatePasswordForUser(currentUser.id, newPassword);
-    setUsers(listUsers());
+    await changePassword(currentPassword, newPassword);
   }
 
   async function handleInviteUser(input: {
@@ -1204,14 +1219,14 @@ export default function App() {
         /* ARES fallback */
       }
     }
-    createUser({
+    await inviteUser({
       fullName: input.fullName,
       email: input.email,
       password: input.password,
       role: input.role,
       profile,
     });
-    setUsers(listUsers());
+    await refreshUsers(true);
   }
 
   async function saveDraft() {
@@ -1466,7 +1481,6 @@ export default function App() {
               onLogin={handleLogin}
               onGoRegister={() => navigate("/registrace")}
               onTryFree={() => navigate("/faktura-zdarma")}
-              onResetPassword={handleResetPassword}
             />
           }
         />
@@ -2062,21 +2076,17 @@ function HomePage(props: { onLogin: () => void; onRegister: () => void; onTryFre
 }
 
 function LoginPage(props: {
-  onLogin: (email: string, password: string) => void;
+  onLogin: (email: string, password: string) => Promise<void>;
   onGoRegister: () => void;
   onTryFree: () => void;
-  onResetPassword: (email: string, newPassword: string) => void;
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [showReset, setShowReset] = useState(false);
-  const [resetEmail, setResetEmail] = useState("");
-  const [resetPassword, setResetPassword] = useState("");
-  const [resetConfirm, setResetConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [resetMsg, setResetMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   return (
     <AuthShell
@@ -2088,13 +2098,16 @@ function LoginPage(props: {
     >
       <form
         className="space-y-6"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           setError(null);
+          setBusy(true);
           try {
-            props.onLogin(email, password);
+            await props.onLogin(email, password);
           } catch (err) {
             setError(err instanceof Error ? err.message : String(err));
+          } finally {
+            setBusy(false);
           }
         }}
       >
@@ -2150,57 +2163,19 @@ function LoginPage(props: {
         </label>
         {error && <p className="text-xs text-error">{error}</p>}
         <button
-          className="w-full auth-editorial-gradient text-on-primary font-semibold py-4 rounded-md shadow-lg shadow-primary/10 hover:brightness-110 active:scale-[0.98] transition-all text-sm"
+          className="w-full auth-editorial-gradient text-on-primary font-semibold py-4 rounded-md shadow-lg shadow-primary/10 hover:brightness-110 active:scale-[0.98] transition-all text-sm disabled:opacity-60"
           type="submit"
+          disabled={busy}
         >
-          Přihlásit se
+          {busy ? "Přihlašuji…" : "Přihlásit se"}
         </button>
       </form>
       {showReset && (
-        <div className="mt-6 rounded-lg border border-outline-variant/30 bg-surface-container-low/50 p-4 space-y-3">
+        <div className="mt-6 rounded-lg border border-outline-variant/30 bg-surface-container-low/50 p-4 space-y-2">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-on-surface-variant">Reset hesla</p>
-          <input
-            className="w-full px-3 py-2.5 bg-white border border-outline-variant/30 rounded-md focus:ring-2 focus:ring-primary/20 text-sm"
-            placeholder="Email účtu"
-            type="email"
-            value={resetEmail}
-            onChange={(e) => setResetEmail(e.target.value)}
-          />
-          <input
-            className="w-full px-3 py-2.5 bg-white border border-outline-variant/30 rounded-md focus:ring-2 focus:ring-primary/20 text-sm"
-            placeholder="Nové heslo"
-            type="password"
-            value={resetPassword}
-            onChange={(e) => setResetPassword(e.target.value)}
-          />
-          <input
-            className="w-full px-3 py-2.5 bg-white border border-outline-variant/30 rounded-md focus:ring-2 focus:ring-primary/20 text-sm"
-            placeholder="Potvrzení nového hesla"
-            type="password"
-            value={resetConfirm}
-            onChange={(e) => setResetConfirm(e.target.value)}
-          />
-          {resetMsg && <p className="text-xs text-emerald-700">{resetMsg}</p>}
-          <button
-            type="button"
-            className="w-full px-3 py-2.5 rounded-md bg-primary text-on-primary text-xs font-semibold uppercase tracking-wide cursor-pointer"
-            onClick={() => {
-              setResetMsg(null);
-              if (resetPassword !== resetConfirm) {
-                setError("Nová hesla se neshodují.");
-                return;
-              }
-              try {
-                props.onResetPassword(resetEmail, resetPassword);
-                setError(null);
-                setResetMsg("Heslo bylo změněno. Nyní se můžete přihlásit.");
-              } catch (err) {
-                setError(err instanceof Error ? err.message : String(err));
-              }
-            }}
-          >
-            Nastavit nové heslo
-          </button>
+          <p className="text-xs text-on-surface-variant leading-relaxed">
+            Reset hesla e-mailem zatím není k dispozici. Po přihlášení si heslo změníte v sekci Uživatelé, nebo požádejte administrátora.
+          </p>
         </div>
       )}
       <div className="text-center mt-7">
@@ -2470,8 +2445,8 @@ function RegisterPage(props: {
 function UsersManagementPage(props: {
   users: AppUser[];
   currentUserId: string;
-  onDeleteUser: (id: string) => void;
-  onSetRole: (id: string, role: UserRole) => void;
+  onDeleteUser: (id: string) => Promise<void>;
+  onSetRole: (id: string, role: UserRole) => Promise<void>;
   onInviteUser: (input: {
     fullName: string;
     email: string;
@@ -2480,7 +2455,7 @@ function UsersManagementPage(props: {
     ico: string;
     companyName: string;
   }) => Promise<void>;
-  onChangeOwnPassword: (currentPassword: string, newPassword: string) => void;
+  onChangeOwnPassword: (currentPassword: string, newPassword: string) => Promise<void>;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [inviteBusy, setInviteBusy] = useState(false);
@@ -2519,12 +2494,15 @@ function UsersManagementPage(props: {
                   value={u.role}
                   disabled={u.id === props.currentUserId}
                   onChange={(e) => {
-                    try {
-                      props.onSetRole(u.id, e.target.value as UserRole);
-                      setError(null);
-                    } catch (err) {
-                      setError(err instanceof Error ? err.message : String(err));
-                    }
+                    const role = e.target.value as UserRole;
+                    void (async () => {
+                      try {
+                        await props.onSetRole(u.id, role);
+                        setError(null);
+                      } catch (err) {
+                        setError(err instanceof Error ? err.message : String(err));
+                      }
+                    })();
                   }}
                   className="px-2 py-1 text-xs rounded border border-outline-variant/35 bg-white disabled:opacity-50"
                 >
@@ -2540,12 +2518,14 @@ function UsersManagementPage(props: {
                     type="button"
                     className="text-xs font-semibold text-error hover:underline cursor-pointer"
                     onClick={() => {
-                      try {
-                        props.onDeleteUser(u.id);
-                        setError(null);
-                      } catch (e) {
-                        setError(e instanceof Error ? e.message : String(e));
-                      }
+                      void (async () => {
+                        try {
+                          await props.onDeleteUser(u.id);
+                          setError(null);
+                        } catch (e) {
+                          setError(e instanceof Error ? e.message : String(e));
+                        }
+                      })();
                     }}
                   >
                     Smazat
@@ -2662,15 +2642,17 @@ function UsersManagementPage(props: {
                 setError("Nová hesla se neshodují.");
                 return;
               }
-              try {
-                props.onChangeOwnPassword(pwCurrent, pwNew);
-                setPwCurrent("");
-                setPwNew("");
-                setPwNew2("");
-                setError(null);
-              } catch (err) {
-                setError(err instanceof Error ? err.message : String(err));
-              }
+              void (async () => {
+                try {
+                  await props.onChangeOwnPassword(pwCurrent, pwNew);
+                  setPwCurrent("");
+                  setPwNew("");
+                  setPwNew2("");
+                  setError(null);
+                } catch (err) {
+                  setError(err instanceof Error ? err.message : String(err));
+                }
+              })();
             }}
             className="px-4 py-2 rounded-md bg-surface-container-high text-on-surface text-xs font-semibold uppercase tracking-wide"
           >
